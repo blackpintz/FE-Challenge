@@ -9,9 +9,10 @@ import DaiToken from './artifacts/contracts/DaiToken.sol/DaiToken.json';
 import {ggAddress, tokenAddress} from './config'
 
 function App() {
-
+  
   let ggContract;
   let daiToken;
+  let amount;
 
   useEffect(() => {
     loadWeb3()
@@ -24,21 +25,45 @@ function App() {
     const signer = provider.getSigner()
     ggContract = new ethers.Contract(ggAddress, GoodGhosting.abi, signer)
     daiToken = new ethers.Contract(tokenAddress, DaiToken.abi, signer)
+    amount = ethers.utils.parseUnits('1', 'ether')
   }
 
   async function approveGame() {
-    let amount = ethers.utils.parseUnits('1', 'ether')
-    await daiToken.approve(ggAddress, amount);
+    const allowance = await checkAllowance()
+    const joined = await checkJoined()
+    if(allowance.toString() !== amount.toString() && joined === false) {
+      await daiToken.approve(ggAddress, amount);
+    } else {
+      console.log("You are already approved.")
+    }
+    
+    
   }
 
   async function joinGame() {
-    let amount = ethers.utils.parseUnits('1', 'ether')
-    await ggContract.joinGame(amount, {gasLimit:100000, gasPrice:2500000000})
+    const allowance = await checkAllowance()
+    if(allowance.toString() === amount.toString()) {
+      await ggContract.joinGame(amount, {gasLimit:100000, gasPrice:2500000000})
+    } else {
+      console.log('Either you are not approved or you are already a player.')
+    }
   }
 
   async function checkBalance() {
-    const balance = await daiToken.balanceOf(ggAddress)
-    console.log(balance.toString())
+    let amount = ethers.utils.parseUnits('1', 'ether')
+    const balance = await ggContract.checkBalance()
+    // let value = ethers.utils.formatEther(balance)
+    console.log(balance)
+  }
+
+  async function checkAllowance() {
+    const allowance = await ggContract.checkAllowance()
+    return allowance;
+  }
+
+  async function checkJoined() {
+    const joined = await ggContract.checkJoined()
+    return joined;
   }
 
   async function withdrawGame() {
@@ -52,6 +77,7 @@ function App() {
     <button onClick={approveGame}>Approve Game</button>
     <button onClick={joinGame}>Join Game</button>
     <button onClick={checkBalance}>Check Balance</button>
+    <button onClick={checkAllowance}>Check Allowance</button>
     <button onClick={withdrawGame}>Withdraw Game</button>
     </div>
   );
