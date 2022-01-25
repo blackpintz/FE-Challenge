@@ -3,14 +3,14 @@ import Web3Modal from 'web3modal';
 import {ethers} from 'ethers';
 import './App.css';
 
-import GoodGhosting from './artifacts/contracts/GoodGhosting.sol/GoodGhosting.json';
+import Game from './artifacts/contracts/Game.sol/Game.json';
 import DaiToken from './artifacts/contracts/DaiToken.sol/DaiToken.json';
 
-import {ggAddress, tokenAddress} from './config'
+import {gameAddress, tokenAddress, ggAddress} from './config'
 
 function App() {
 
-  let ggContract;
+  let gameContract;
   let daiToken;
 
   useEffect(() => {
@@ -22,19 +22,20 @@ function App() {
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
     const signer = provider.getSigner()
-    ggContract = new ethers.Contract(ggAddress, GoodGhosting.abi, signer)
+    gameContract = new ethers.Contract(gameAddress, Game.abi, signer)
     daiToken = new ethers.Contract(tokenAddress, DaiToken.abi, signer)
   }
 
   async function approveGame() {
-    let amount = ethers.utils.parseUnits('2', 'ether')
+    let amount = ethers.utils.parseUnits('1', 'ether')
+    await daiToken.approve(gameAddress, amount);
     await daiToken.approve(ggAddress, amount);
-    await ggContract.approveGame(amount, {gasLimit:100000, gasPrice:2500000000})
+    await gameContract.approveGame({gasLimit:100000, gasPrice:2500000000})
   }
 
   async function joinGame() {
-    let amount = ethers.utils.parseUnits('1', 'ether')
-    await ggContract.joinGame(amount, {gasLimit:100000, gasPrice:2500000000})
+    // let amount = ethers.utils.parseUnits('1', 'ether')
+    await gameContract.joinGame({gasLimit:100000, gasPrice:2500000000})
   }
 
   async function checkBalance() {
