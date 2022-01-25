@@ -11,12 +11,8 @@ contract GoodGhosting {
         daiToken = DaiToken(0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD);
     }
 
-    function approveGame(uint _amount) public {
-        daiToken.transferFrom(msg.sender, address(this), _amount);
-    }
-
     function joinGame(uint _amount) public payable {
-        daiToken.transfer(wallet, _amount);
+         daiToken.transferFrom(msg.sender, address(this), _amount);
     }
 
     function withdrawGame(uint _amount) public payable {

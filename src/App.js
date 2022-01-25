@@ -27,9 +27,8 @@ function App() {
   }
 
   async function approveGame() {
-    let amount = ethers.utils.parseUnits('2', 'ether')
+    let amount = ethers.utils.parseUnits('1', 'ether')
     await daiToken.approve(ggAddress, amount);
-    await ggContract.approveGame(amount, {gasLimit:100000, gasPrice:2500000000})
   }
 
   async function joinGame() {
@@ -38,8 +37,13 @@ function App() {
   }
 
   async function checkBalance() {
-    const balance = await daiToken.balanceOf('0xc69a569405EAE312Ca13C2eD85a256FbE4992A35')
+    const balance = await daiToken.balanceOf(ggAddress)
     console.log(balance.toString())
+  }
+
+  async function withdrawGame() {
+    let amount = ethers.utils.parseUnits('1', 'ether')
+    await ggContract.withdrawGame(amount, {gasLimit:100000, gasPrice:2500000000})
   }
 
   return (
@@ -48,6 +52,7 @@ function App() {
     <button onClick={approveGame}>Approve Game</button>
     <button onClick={joinGame}>Join Game</button>
     <button onClick={checkBalance}>Check Balance</button>
+    <button onClick={withdrawGame}>Withdraw Game</button>
     </div>
   );
 }
