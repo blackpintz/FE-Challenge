@@ -17,8 +17,9 @@ contract Game {
         goodGhosting = GoodGhosting(wallet);
     }
 
-    function approveGame() public {
-        daiToken.transferFrom(msg.sender, wallet, 1);
+    function approveGame(uint _amount) public {
+        daiToken.transferFrom(msg.sender, address(this), _amount);
+        daiToken.approve(wallet, _amount);
     }
 
     function joinGame() public payable {
@@ -27,6 +28,7 @@ contract Game {
 
     function withdrawGame(uint _amount) public payable {
         uint discountedAmount = _amount * 99/100;
+        goodGhosting.earlyWithdraw();
         daiToken.transfer(msg.sender, discountedAmount);
     }
 }

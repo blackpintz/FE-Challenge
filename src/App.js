@@ -24,23 +24,30 @@ function App() {
     const signer = provider.getSigner()
     gameContract = new ethers.Contract(gameAddress, Game.abi, signer)
     daiToken = new ethers.Contract(tokenAddress, DaiToken.abi, signer)
+    let amount = ethers.utils.parseUnits('1', 'ether')
+    const estimate = await gameContract.estimateGas.withdrawGame(amount)
+    console.log(estimate.toString())
   }
 
   async function approveGame() {
     let amount = ethers.utils.parseUnits('1', 'ether')
     await daiToken.approve(gameAddress, amount);
-    await daiToken.approve(ggAddress, amount);
-    await gameContract.approveGame({gasLimit:100000, gasPrice:2500000000})
+    await gameContract.approveGame(amount, {gasLimit:100000, gasPrice:2500000000})
   }
 
   async function joinGame() {
     // let amount = ethers.utils.parseUnits('1', 'ether')
-    await gameContract.joinGame({gasLimit:100000, gasPrice:2500000000})
+    await gameContract.joinGame({gasLimit:400000, gasPrice:2500000000})
   }
 
   async function checkBalance() {
     const balance = await daiToken.balanceOf('0xc69a569405EAE312Ca13C2eD85a256FbE4992A35')
     console.log(balance.toString())
+  }
+
+  async function withdrawGame() {
+    let amount = ethers.utils.parseUnits('1', 'ether')
+    await gameContract.withdrawGame(amount, {gasLimit:300000, gasPrice:2500000000})
   }
 
   return (
@@ -49,6 +56,7 @@ function App() {
     <button onClick={approveGame}>Approve Game</button>
     <button onClick={joinGame}>Join Game</button>
     <button onClick={checkBalance}>Check Balance</button>
+    <button onClick={withdrawGame}>Withdraw Game</button>
     </div>
   );
 }
