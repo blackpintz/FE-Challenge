@@ -1,12 +1,12 @@
 const hre = require("hardhat");
 
 async function main() {
-  const GoodGhosting = await hre.ethers.getContractFactory("GoodGhosting");
-  const goodGhosting = await GoodGhosting.deploy();
+  const Game = await hre.ethers.getContractFactory("Game");
+  const game = await Game.deploy();
 
-  await goodGhosting.deployed();
+  await game.deployed();
 
-  console.log("GoodGhosting deployed to:", goodGhosting.address);
+  console.log("Game deployed to:", game.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
