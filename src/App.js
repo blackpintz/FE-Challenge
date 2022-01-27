@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Web3Modal from 'web3modal';
 import {ethers} from 'ethers';
 import './App.css';
@@ -9,21 +9,34 @@ import DaiToken from './artifacts/contracts/DaiToken.sol/DaiToken.json';
 import {gameAddress, tokenAddress} from './config'
 
 function App() {
-  
+  const [address, setAddress] = useState('')
+  const [network, setNetwork] = useState('')
   let gameContract;
   let daiToken;
   let amount;
-  let signer;
+  let signerAddress;
+
+  const handleAccountChanged = (accounts) => {
+    setAddress(accounts[0])
+  }
 
   useEffect(() => {
+    window.ethereum.on('accountsChanged', handleAccountChanged)
     loadWeb3()
+
+    return () => {
+      window.ethereum.removeListener('accountsChanged', handleAccountChanged);
+    }
   },[])
+
 
   async function loadWeb3() {
     const web3Modal = new Web3Modal()
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection)
-    signer = provider.getSigner()
+    const signer = provider.getSigner()
+    signerAddress = await signer.getAddress()
+    setAddress(signerAddress)
     gameContract = new ethers.Contract(gameAddress, Game.abi, signer)
     daiToken = new ethers.Contract(tokenAddress, DaiToken.abi, signer)
     amount = ethers.utils.parseUnits('1', 'ether')
@@ -32,11 +45,6 @@ function App() {
     // console.log(estimate.toString())
   }
 
-  async function misc() {
-    const addr = await signer.getAddress()
-    console.log(addr)
-    await daiToken.approve('0xc69a569405EAE312Ca13C2eD85a256FbE4992A35', amount)
-  }
 
   async function approveGame() {
     const allowance = await checkAllowance()
@@ -45,8 +53,7 @@ function App() {
       await daiToken.approve(gameAddress, amount);
     } else {
       console.log("You are already approved.")
-    }
-    
+    }  
     
   }
 
@@ -59,11 +66,6 @@ function App() {
     }
   }
 
-  async function checkBalance() {
-    const balance = await gameContract.checkBalance()
-    // let value = ethers.utils.formatEther(balance)
-    console.log(balance)
-  }
 
   async function checkAllowance() {
     const allowance = await gameContract.checkAllowance()
@@ -79,15 +81,15 @@ function App() {
     await gameContract.withdrawGame(amount, {gasLimit:300000, gasPrice:2500000000})
   }
 
+
   return (
     <div className="App">
     <h2>Hello World!</h2>
+    <h4>Network:{network}</h4>
+    <h4>Address: {address}</h4>
     <button onClick={approveGame}>Approve Game</button>
     <button onClick={joinGame}>Join Game</button>
-    <button onClick={checkBalance}>Check Balance</button>
-    <button onClick={checkAllowance}>Check Allowance</button>
     <button onClick={withdrawGame}>Withdraw Game</button>
-    <button onClick={misc}>Misc</button>
     </div>
   );
 }
