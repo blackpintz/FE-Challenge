@@ -15,7 +15,6 @@ function App() {
   const [daiToken, setDaiToken] = useState(undefined);
   const [amount, setAmount] = useState(undefined);
   const [connected, setConnected] = useState(false)
-  const [complete, setComplete] = useState(true)
 
   async function connectWallet() {
     if(window.ethereum) {
@@ -47,7 +46,6 @@ function App() {
     const provider = new ethers.providers.Web3Provider(connection, 'any')
     const {name} = await provider.getNetwork()
     setNetwork(name)
-    console.log(name)
   }
 
   useEffect(() => {
