@@ -33,6 +33,8 @@ function App() {
       const amount = ethers.utils.parseUnits('1', 'ether')
       setAmount(amount)
       setConnected(true)
+    } else {
+      console.log('Install Metamask.')
     }
   }
 
@@ -111,25 +113,25 @@ function App() {
         {network === 'kovan' ? (
           <>
           <div>
-          <button onClick={approveGame}>Approve Game</button>
+          <button id='approve' onClick={approveGame}>Approve Game</button>
           </div>
           <div>
-          <button onClick={joinGame}>Join Game</button>
+          <button id='join' onClick={joinGame}>Join Game</button>
           </div>
           <div>
-          <button onClick={withdrawGame}>Withdraw Game</button>
+          <button id='withdraw' onClick={withdrawGame}>Withdraw Game</button>
           </div>
           </>
         ) : (
           <>
           <h5>Please switch to Kovan network</h5>
-          <button onClick={switchNetwork}>Switch to Kovan</button>
+          <button id='switch' onClick={switchNetwork}>Switch to Kovan</button>
           </>
         )}
       </>
     ) : (
       <>
-      <button onClick={connectWallet}>Connect Wallet</button>
+      <button id='connect' onClick={connectWallet}>Connect Wallet</button>
       </>
     )}
     </div>
