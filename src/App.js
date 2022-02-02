@@ -10,7 +10,8 @@ import {gameAddress, tokenAddress} from './config'
 
 function App() {
   const [address, setAddress] = useState('');
-  const [network, setNetwork] = useState('');
+  const [network, setNetwork] = useState('no value');
+  const [netName, setName] = useState('')
   const [gameContract, setGameContract] = useState(undefined);
   const [daiToken, setDaiToken] = useState(undefined);
   const [amount, setAmount] = useState(undefined);
@@ -20,11 +21,11 @@ function App() {
     if(window.ethereum) {
       const accounts = await window.ethereum.request({method: 'eth_requestAccounts'})
       setAddress(accounts[0])
+      const network = await window.ethereum.request({method: 'eth_chainId'})
+      setNetwork(network)
       const web3Modal = new Web3Modal()
       const connection = await web3Modal.connect()
       const provider = new ethers.providers.Web3Provider(connection, 'any')
-      const {name} = await provider.getNetwork()
-      setNetwork(name)
       const signer = await provider.getSigner()
       const gameContract = new ethers.Contract(gameAddress, Game.abi, signer)
       setGameContract(gameContract)
@@ -33,6 +34,8 @@ function App() {
       const amount = ethers.utils.parseUnits('1', 'ether')
       setAmount(amount)
       setConnected(true)
+      const {name} = await provider.getNetwork()
+      setName(name)
     } else {
       console.log('Install Metamask.')
     }
@@ -47,7 +50,8 @@ function App() {
     const connection = await web3Modal.connect()
     const provider = new ethers.providers.Web3Provider(connection, 'any')
     const {name} = await provider.getNetwork()
-    setNetwork(name)
+    setName(name)
+    setNetwork(chainId)
   }
 
   useEffect(() => {
@@ -109,29 +113,29 @@ function App() {
     {connected ? (
       <>
         <h4>Address: {address}</h4>
-        <h4>Network: {network}</h4>
-        {network === 'kovan' ? (
+        <h4>Network: {netName}</h4>
+        {network === '0x2a' ? (
           <>
           <div>
-          <button id='approve' onClick={approveGame}>Approve Game</button>
+          <button onClick={approveGame}>Approve Game</button>
           </div>
           <div>
-          <button id='join' onClick={joinGame}>Join Game</button>
+          <button onClick={joinGame}>Join Game</button>
           </div>
           <div>
-          <button id='withdraw' onClick={withdrawGame}>Withdraw Game</button>
+          <button onClick={withdrawGame}>Withdraw Game</button>
           </div>
           </>
         ) : (
           <>
           <h5>Please switch to Kovan network</h5>
-          <button id='switch' onClick={switchNetwork}>Switch to Kovan</button>
+          <button onClick={switchNetwork}>Switch to Kovan</button>
           </>
         )}
       </>
     ) : (
       <>
-      <button id='connect' onClick={connectWallet}>Connect Wallet</button>
+      <button onClick={connectWallet}>Connect Wallet</button>
       </>
     )}
     </div>
