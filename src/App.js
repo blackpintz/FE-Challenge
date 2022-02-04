@@ -104,7 +104,9 @@ function App() {
   }
 
   async function withdrawGame() {
-    await gameContract.withdrawGame(amount, {gasLimit:300000, gasPrice:2500000000})
+    const joined = await checkJoined()
+    if(joined === true) await gameContract.withdrawGame(amount, {gasLimit:300000, gasPrice:2500000000})
+    else console.log("You are not a player")
   }
 
   return (
