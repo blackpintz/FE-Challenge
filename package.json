@@ -23,7 +23,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:synpress:open": "env-cmd -f .env synpress open",
+    "test:e2e": "start-server-and-test 'npm start' http-get://localhost:3000 'env-cmd -f .env synpress run'"
   },
   "eslintConfig": {
     "extends": [
@@ -44,6 +46,8 @@
     ]
   },
   "devDependencies": {
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1"
+    "@synthetixio/synpress": "^1.1.1",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1",
+    "env-cmd": "^10.1.0"
   }
 }
