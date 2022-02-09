@@ -31,3 +31,5 @@ typechain
 #Hardhat files
 cache
 artifacts
+tests/e2e/screenshots
+tests/e2e/videos

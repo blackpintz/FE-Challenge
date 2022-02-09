@@ -119,7 +119,7 @@ function App() {
         {network === '0x2a' ? (
           <>
           <div>
-          <button onClick={approveGame}>Approve Game</button>
+          <button id="approve" onClick={approveGame}>Approve Game</button>
           </div>
           <div>
           <button onClick={joinGame}>Join Game</button>
@@ -137,7 +137,7 @@ function App() {
       </>
     ) : (
       <>
-      <button onClick={connectWallet}>Connect Wallet</button>
+      <button id='connect' onClick={connectWallet}>Connect Wallet</button>
       </>
     )}
     </div>
