@@ -122,10 +122,10 @@ function App() {
           <button id="approve" onClick={approveGame}>Approve Game</button>
           </div>
           <div>
-          <button onClick={joinGame}>Join Game</button>
+          <button id="join" onClick={joinGame}>Join Game</button>
           </div>
           <div>
-          <button onClick={withdrawGame}>Withdraw Game</button>
+          <button id="withdraw" onClick={withdrawGame}>Withdraw Game</button>
           </div>
           </>
         ) : (
