@@ -9,13 +9,14 @@ let chain_id;
 window.ethereum = {
   isMetaMask: true,
   request: async(request)=> {
-    if(request.method === 'eth_requestAccounts') return [wallet_address]
+    if(['eth_accounts', 'eth_requestAccounts'].includes(request.method)) return [wallet_address]
     if(request.method === 'eth_chainId') return chain_id
   },
   on: jest.fn(),
   removeListener: jest.fn(),
 }
 
+jest.spyOn(React, 'useEffect').mockImplementation(() => 'App loaded')
 
 test('renders app correctly', async () => {
   chain_id = '0x3'
@@ -51,9 +52,11 @@ test('displays join game button when the detected network is kovan', async () =>
 
  const btn2 = await screen.queryByText(/Join Game/)
  const network = await screen.queryByText(/Network: kovan/)
+ const info = await screen.queryByText(/Please approve before joining the game!/)
 
  await waitFor(() => {
   expect(btn2).toBeInTheDocument()
   expect(network).toBeInTheDocument()
+  expect(info).toBeInTheDocument()
 })
 })

@@ -16,6 +16,8 @@ function App() {
   const [daiToken, setDaiToken] = useState(undefined);
   const [amount, setAmount] = useState(undefined);
   const [connected, setConnected] = useState(false)
+  const [approved, setApproved] = useState(false)
+  const [player, setPlayer] = useState(false)
 
   async function connectWallet() {
     if(window.ethereum) {
@@ -41,8 +43,9 @@ function App() {
     }
   }
 
-  const handleAccountChanged = (accounts) => {
+  const handleAccountChanged = async (accounts) => {
     setAddress(accounts[0])
+    await playerStatus()
   }
 
   const networkChanged = async (chainId) => {
@@ -55,6 +58,7 @@ function App() {
   }
 
   useEffect(() => {
+    if(connected) playerStatus()
     window.ethereum.on('accountsChanged', handleAccountChanged);
     window.ethereum.on("chainChanged", networkChanged);
 
@@ -62,7 +66,7 @@ function App() {
       window.ethereum.removeListener('accountsChanged', handleAccountChanged);
       window.ethereum.removeListener("chainChanged", networkChanged);
     }
-  },[])
+  },[connected])
 
   async function switchNetwork() {
     await window.ethereum.request({
@@ -71,12 +75,22 @@ function App() {
     })
   }
 
+  async function playerStatus() {
+    const allowance = await checkAllowance() 
+    console.log(allowance)
+    const joined = await checkJoined()
+    const status = allowance.toString() === amount.toString() && !joined
+    setApproved(status)
+    setPlayer(joined)
+  }
+
 
   async function approveGame() {
     const allowance = await checkAllowance()
     const joined = await checkJoined()
-    if(allowance.toString() !== amount.toString() && joined === false) {
+    if(allowance.toString() !== amount.toString() && !joined) {
       await daiToken.approve(gameAddress, amount);
+      setApproved(true);
     } else {
       console.log("You are already approved.")
     }  
@@ -87,6 +101,7 @@ function App() {
     const allowance = await checkAllowance()
     if(allowance.toString() === amount.toString()) {
       await gameContract.joinGame(amount, {gasLimit:400000, gasPrice:2500000000})
+      setPlayer(true);
     } else {
       console.log('Either you are not approved or you are already a player.')
     }
@@ -105,7 +120,11 @@ function App() {
 
   async function withdrawGame() {
     const joined = await checkJoined()
-    if(joined === true) await gameContract.withdrawGame(amount, {gasLimit:300000, gasPrice:2500000000})
+    if(joined === true) {
+      await gameContract.withdrawGame(amount, {gasLimit:300000, gasPrice:2500000000})
+      setApproved(false);
+      setPlayer(false);
+    }
     else console.log("You are not a player")
   }
 
@@ -118,6 +137,9 @@ function App() {
         <h4>Network: {netName}</h4>
         {network === '0x2a' ? (
           <>
+          {!approved && !player ? <h2>Please approve before joining the game!</h2> : <></>}
+          {player ? <h2>You are a player!</h2> : <></>}
+          {approved && !player ? <h2>You are approved. Please join the game!</h2>: <></>}
           <div>
           <button id="approve" onClick={approveGame}>Approve Game</button>
           </div>

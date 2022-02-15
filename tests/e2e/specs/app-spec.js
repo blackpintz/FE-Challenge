@@ -1,4 +1,4 @@
-describe("Connect metamask wallet", () => {
+describe("GoodGhosting game process", () => {
     it('visits page', () => {
         cy.visit('/')
         cy.get('#connect').click()
