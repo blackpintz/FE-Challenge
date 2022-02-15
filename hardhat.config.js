@@ -8,7 +8,7 @@ module.exports = {
     },
     kovan: {
       url: `https://kovan.infura.io/v3/${process.env.PROJECT_ID}`,
-      accounts: [process.env.PRIVATE_KEY, process.env.PRIVATE_KEY_1]
+      accounts: [process.env.PRIVATE_KEY]
     }
   },
   solidity: "0.8.4",
