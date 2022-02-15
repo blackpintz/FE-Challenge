@@ -13,7 +13,7 @@
 - run ```npx hardhat run .\scripts\Deploy.js --network kovan``` to compile contracts. Copy the address, go to ```src/config.js```, and replace the ```gameAddress``` address.
 
 - run ```npm start``` and open the app on ```localhost:3000```.
-- Visit ![etherscan](https://kovan.etherscan.io/address/0xc69a569405EAE312Ca13C2eD85a256FbE4992A35#readContract), paste game address  under players to confirm status when you join/withdraw the game.
+- Visit [etherscan](https://kovan.etherscan.io/address/0xc69a569405EAE312Ca13C2eD85a256FbE4992A35#readContract), paste game address  under players to confirm status when you join/withdraw the game.
 
 ## Tests
 
