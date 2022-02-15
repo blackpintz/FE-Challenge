@@ -45,7 +45,7 @@ function App() {
 
   const handleAccountChanged = async (accounts) => {
     setAddress(accounts[0])
-    await playerStatus()
+    if(connected) await playerStatus()
   }
 
   const networkChanged = async (chainId) => {
@@ -151,7 +151,7 @@ function App() {
           {player ? (
             <>
             <h2>You are a player!</h2>
-            <button id="withdraw" onClick={withdrawGame}>Withdraw Game</button> 
+            <button id="withdraw" onClick={withdrawGame}>Early Withdraw</button> 
             </>
           ): <></>}
           </>
