@@ -50,7 +50,7 @@ test('displays join game button when the detected network is kovan', async () =>
    userEvent.click(btn)
  })
 
- const btn2 = await screen.queryByText(/Join Game/)
+ const btn2 = await screen.queryByText(/Approve Game/)
  const network = await screen.queryByText(/Network: kovan/)
  const info = await screen.queryByText(/Please approve before joining the game!/)
 

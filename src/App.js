@@ -77,7 +77,6 @@ function App() {
 
   async function playerStatus() {
     const allowance = await checkAllowance() 
-    console.log(allowance)
     const joined = await checkJoined()
     const status = allowance.toString() === amount.toString() && !joined
     setApproved(status)
@@ -137,18 +136,24 @@ function App() {
         <h4>Network: {netName}</h4>
         {network === '0x2a' ? (
           <>
-          {!approved && !player ? <h2>Please approve before joining the game!</h2> : <></>}
-          {player ? <h2>You are a player!</h2> : <></>}
-          {approved && !player ? <h2>You are approved. Please join the game!</h2>: <></>}
-          <div>
-          <button id="approve" onClick={approveGame}>Approve Game</button>
-          </div>
-          <div>
-          <button id="join" onClick={joinGame}>Join Game</button>
-          </div>
-          <div>
-          <button id="withdraw" onClick={withdrawGame}>Withdraw Game</button>
-          </div>
+          {!approved && !player ? (
+            <>
+            <h2>Please approve before joining the game!</h2>
+            <button id="approve" onClick={approveGame}>Approve Game</button>
+            </>
+          ) : <></>}
+          {approved && !player ? (
+            <>
+            <h2>You are approved. Please join the game!</h2>
+            <button id="join" onClick={joinGame}>Join Game</button>
+            </>
+          ): <></>}
+          {player ? (
+            <>
+            <h2>You are a player!</h2>
+            <button id="withdraw" onClick={withdrawGame}>Withdraw Game</button> 
+            </>
+          ): <></>}
           </>
         ) : (
           <>
